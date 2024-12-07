@@ -45,6 +45,11 @@ let velocityX = -8; //Cactus moving left speed
 let velocityY = 0;
 let gravity = 0.4;
 
+//Run physics
+let runFrame = 0;
+let runFrameCounter = 0;
+let frameDelay = 15;
+
 let gameOver = false;
 let gameOverImg;
 let scoreSpeed = 0.2;
@@ -78,6 +83,12 @@ window.onload = function () {
   dinoImg = new Image();
   dinoImg.src = "./images/dino.png";
   dino.img = dinoImg;
+
+  dinoRun1Img = new Image();
+  dinoRun1Img.src = "./images/dino-run1.png";
+
+  dinoRun2Img = new Image();
+  dinoRun2Img.src = "./images/dino-run2.png";
 
   dinoDuckImg = new Image();
   dinoDuckImg.src = "./images/dino-duck1.png";
@@ -144,6 +155,21 @@ function update() {
   velocityY += gravity;
   dino.y = Math.min(dino.y + velocityY, boardHeight - dino.height);
   context.drawImage(dino.img, dino.x, dino.y, dino.width, dino.height);
+
+  //Dino animation for running
+  if (dino.y == dinoY && !isDucking) {
+    runFrameCounter++;
+  }
+
+  if (runFrameCounter >= frameDelay) {
+    runFrame = (runFrame + 1) % 2;
+    if (runFrame == 0) {
+      dino.img = dinoRun1Img;
+    } else {
+      dino.img = dinoRun2Img;
+    }
+    runFrameCounter = 0;
+  }
 
   //Cactus
   for (let i = 0; i < cactusArray.length; i++) {
