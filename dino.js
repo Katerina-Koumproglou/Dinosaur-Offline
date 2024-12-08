@@ -3,6 +3,9 @@ let board;
 let boardWidth = 750;
 let boardHeight = 300;
 let context;
+let trackImg;
+let trackX = 0;
+let trackSpeed = -8;
 
 //Dino
 let dinoWidth = 88;
@@ -105,6 +108,9 @@ window.onload = function () {
   dinoDeadImg = new Image();
   dinoDeadImg.src = "./images/dino-dead.png";
 
+  trackImg = new Image();
+  trackImg.src = "./images/track.png";
+
   gameOverImg = new Image();
   gameOverImg.src = "./images/game-over.png";
 
@@ -150,6 +156,20 @@ function update() {
   requestAnimationFrame(update);
 
   context.clearRect(0, 0, board.width, board.height);
+
+  //Track
+  trackX += trackSpeed;
+  if (trackX <= -boardWidth) {
+    trackX = 0;
+  }
+  context.drawImage(trackImg, trackX, boardHeight - 28, boardWidth, 28);
+  context.drawImage(
+    trackImg,
+    trackX + boardWidth,
+    boardHeight - 28,
+    boardWidth,
+    28
+  );
 
   //Dino
   velocityY += gravity;
