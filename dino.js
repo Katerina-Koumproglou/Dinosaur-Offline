@@ -13,6 +13,8 @@ let dinoHeight = 94;
 let dinoX = 50;
 let dinoY = boardHeight - dinoHeight;
 let dinoImg;
+let dinoRun1Img;
+let dinoRun2Img;
 
 let dino = {
   x: dinoX,
@@ -26,7 +28,8 @@ let dino = {
 let dinoDuckWidth = 118;
 let dinoDuckHeight = 60;
 let dinoDuckY = boardHeight - dinoDuckHeight;
-let dinoDuckImg;
+let dinoDuck1Img;
+let dinoDuck2Img;
 
 //Cactus
 let cactusArray = [];
@@ -52,6 +55,11 @@ let gravity = 0.4;
 let runFrame = 0;
 let runFrameCounter = 0;
 let frameDelay = 15;
+
+//Ducking physics
+let duckFrame = 0;
+let duckFrameCounter = 0;
+let duckDelay = 15;
 
 let gameOver = false;
 let gameOverImg;
@@ -93,8 +101,11 @@ window.onload = function () {
   dinoRun2Img = new Image();
   dinoRun2Img.src = "./images/dino-run2.png";
 
-  dinoDuckImg = new Image();
-  dinoDuckImg.src = "./images/dino-duck1.png";
+  dinoDuck1Img = new Image();
+  dinoDuck1Img.src = "./images/dino-duck1.png";
+
+  dinoDuck2Img = new Image();
+  dinoDuck2Img.src = "./images/dino-duck2.png";
 
   cactus1Img = new Image();
   cactus1Img.src = "./images/cactus1.png";
@@ -176,19 +187,29 @@ function update() {
   dino.y = Math.min(dino.y + velocityY, boardHeight - dino.height);
   context.drawImage(dino.img, dino.x, dino.y, dino.width, dino.height);
 
-  //Dino animation for running
-  if (dino.y == dinoY && !isDucking) {
-    runFrameCounter++;
-  }
-
-  if (runFrameCounter >= frameDelay) {
-    runFrame = (runFrame + 1) % 2;
-    if (runFrame == 0) {
-      dino.img = dinoRun1Img;
-    } else {
-      dino.img = dinoRun2Img;
+  //Dino animation for ducking
+  if (isDucking) {
+    duckFrameCounter++;
+    if (duckFrameCounter >= duckDelay) {
+      duckFrame = (duckFrame + 1) % 2;
+      if (duckFrame == 0) {
+        dino.img = dinoDuck1Img;
+      } else {
+        dino.img = dinoDuck2Img;
+      }
+      duckFrameCounter = 0;
     }
-    runFrameCounter = 0;
+  } else if (dino.y == dinoY && !isDucking) {
+    runFrameCounter++;
+    if (runFrameCounter >= frameDelay) {
+      runFrame = (runFrame + 1) % 2;
+      if (runFrame == 0) {
+        dino.img = dinoRun1Img;
+      } else {
+        dino.img = dinoRun2Img;
+      }
+      runFrameCounter = 0;
+    }
   }
 
   //Cactus
@@ -239,7 +260,7 @@ function moveDino(e) {
   } else if (e.code == "ArrowDown" && dino.y == dinoY) {
     if (!isDucking) {
       isDucking = true;
-      dino.img = dinoDuckImg;
+      dino.img = dinoDuck1Img;
       dino.width = dinoDuckWidth;
       dino.height = dinoDuckHeight;
       dino.y = dinoDuckY;
